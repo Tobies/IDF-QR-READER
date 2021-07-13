@@ -59,7 +59,7 @@ const showImage0 = () => {
       //  cv.circle(src, new cv.Point(features.data32F[i], features.data32F[i+1]), 2, new cv.Scalar(255, 200, 0), -1)
       //}
       
-      var size = Math.floor(Math.min(width, height) * 0.50)
+      var size = Math.floor(Math.min(canvas.width, canvas.height) * 0.50)
       var points = [
         new cv.Point(width/2 - size/2, height/2 - size/2), //TOP LEFT
         new cv.Point(width/2 + size/2, height/2 - size/2), //TOP RIGHT
