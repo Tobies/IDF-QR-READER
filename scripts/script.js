@@ -13,9 +13,6 @@ video.srcObject = stream;
   
 let stream_settings = stream.getVideoTracks()[0].getSettings();
 
-var width = stream_settings.width;
-var height = stream_settings.height;
-  
 console.log("stream")
 video.onloadedmetadata = function(e) {
   video.play();
@@ -28,8 +25,8 @@ video.onloadedmetadata = function(e) {
 video.addEventListener('play', function() {
 // trigger business logic
   var canvas = document.getElementById('canvas');
-  canvas.width  = width;
-  canvas.height = height;
+  canvas.width  = video.width;
+  canvas.height = video.height;
   canvas.style.display = "none";
 
   var context = canvas.getContext('2d');
