@@ -1,10 +1,7 @@
-var width = window.outerWidth * 0.25;
-var height = window.outerHeight * 0.25;
-
 navigator.mediaDevices.getUserMedia({
   video: {
-    width: width,
-    height: height,
+    width: {ideal: screen.width},
+    height: {ideal: screen.height},
     facingMode: 'environment',
     frameRate: 30
   }
@@ -13,6 +10,12 @@ navigator.mediaDevices.getUserMedia({
 let video = document.getElementById('video');
 video.style.display = "none";
 video.srcObject = stream;
+  
+let stream_settings = stream.getVideoTracks()[0].getSettings();
+
+var width = stream_settings.width;
+var height = stream_settings.height;
+  
 console.log("stream")
 video.onloadedmetadata = function(e) {
   video.play();
