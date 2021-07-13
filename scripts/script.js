@@ -1,5 +1,5 @@
-var width =  window.innerWidth * 0.5
-var height= window.innerHeight * 0.5
+var width =  window.innerWidth * 0.25
+var height= window.innerHeight * 0.25
 
 navigator.mediaDevices.getUserMedia({
   video: {
