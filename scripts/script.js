@@ -25,8 +25,8 @@ video.onloadedmetadata = function(e) {
 video.addEventListener('play', function() {
 // trigger business logic
   var canvas = document.getElementById('canvas');
-  canvas.width  = video.width;
-  canvas.height = video.height;
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
   canvas.style.display = "none";
 
   var context = canvas.getContext('2d');
