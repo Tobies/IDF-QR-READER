@@ -58,7 +58,7 @@ const showImage0 = () => {
       let code = new cv.Mat();
       //const canny = new cv.Mat();
 
-      var size = Math.floor(Math.min(width, height) * 0.50)
+      var size = Math.floor(Math.min(width, height))
       var points = [
         new cv.Point(width/2 - size/2, height/2 - size/2), //TOP LEFT
         new cv.Point(width/2 + size/2, height/2 - size/2), //TOP RIGHT
