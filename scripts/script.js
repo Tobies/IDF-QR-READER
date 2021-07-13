@@ -74,18 +74,21 @@ const showImage0 = () => {
       cv.line(src, points[2], points[3], [255, 0, 0, 255], 1)
       cv.line(src, points[3], points[0], [255, 0, 0, 255], 1)
       for (var i = 0; i < points.length; i++) {
-        var closestDistance = 10000
-        var closestPoint = null
-        for (var j = 0; j < features.data32F.length; j+=2) {
-          var distance = Math.sqrt( Math.pow((points[i].x-features.data32F[j]), 2) + Math.pow((points[i].y-features.data32F[j+1]), 2) );
-          if (distance < closestDistance) {
-            closestDistance = distance
-            closestPoint = new cv.Point(features.data32F[j], features.data32F[j+1])
+        var a = (src.ucharPtr(points[i].x, points[i].y)[0] + src.ucharPtr(points[i].x, points[i].y)[1] + src.ucharPtr(points[i].x, points[i].y)[2] )/3;
+        if ( a > 220 || a < 25)   {
+          var closestDistance = 10000
+          var closestPoint = null
+          for (var j = 0; j < features.data32F.length; j+=2) {
+            var distance = Math.sqrt( Math.pow((points[i].x-features.data32F[j]), 2) + Math.pow((points[i].y-features.data32F[j+1]), 2) );
+            if (distance < closestDistance) {
+              closestDistance = distance
+              closestPoint = new cv.Point(features.data32F[j], features.data32F[j+1])
+            }
           }
-        }
-        //console.log(closestPoint)
-        if (closestPoint != null) {
-          cv.circle(src, closestPoint, 5, scalar, -1)
+          //console.log(closestPoint)
+          if (closestPoint != null) {
+            cv.circle(src, closestPoint, 5, scalar, -1)
+          }
         }
       }
 
