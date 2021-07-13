@@ -3,8 +3,8 @@ height= window.innerHeight * 0.5
 
 navigator.mediaDevices.getUserMedia({
   video: {
-    width: {ideal: width},
-    height: {ideal: height},
+    width: width,
+    height: height,
     facingMode: 'environment',
     frameRate: 30
   }
