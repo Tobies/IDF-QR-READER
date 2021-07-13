@@ -1,10 +1,10 @@
-var width = window.innerWidth * 0.75;
-var height = window.innerHeight * 0.75;
+var width = window.innerWidth;
+var height = window.innerHeight;
 
 navigator.mediaDevices.getUserMedia({
   video: {
-    width: width,
-    height: height,
+    width: width * 0.25,
+    height: height * 0.25,
     frameRate: 30
   }
 }
