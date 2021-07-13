@@ -47,58 +47,115 @@ video.addEventListener('play', function() {
 
 const showImage0 = () => {
   setTimeout(() => {
-
-      const src = cv.imread(document.getElementById("canvas"))
-      const gray = new cv.Mat();
-      const threshold = new cv.Mat();
-      const features = new cv.Mat();
+    try {
+      let src = cv.imread(document.getElementById("canvas"))
+      let gray = new cv.Mat();
+      let threshold = new cv.Mat();
+      let features = new cv.Mat();
+      let bilateral = new cv.Mat();
+      let roi = new cv.Mat();
+      let lines = new cv.Mat();
+      let code = new cv.Mat();
       //const canny = new cv.Mat();
-      cv.cvtColor(src, gray ,cv.COLOR_BGR2GRAY, 0)
-      cv.Canny(gray, threshold, 120, 255, 3, true)
-      cv.goodFeaturesToTrack(threshold, features,100,0.5,10)
-      //for (var i = 0; i < features.data32F.length; i+=2) {
-      //  cv.circle(src, new cv.Point(features.data32F[i], features.data32F[i+1]), 2, new cv.Scalar(255, 200, 0), -1)
-      //}
-      
+
       var size = Math.floor(Math.min(width, height) * 0.50)
       var points = [
         new cv.Point(width/2 - size/2, height/2 - size/2), //TOP LEFT
         new cv.Point(width/2 + size/2, height/2 - size/2), //TOP RIGHT
         new cv.Point(width/2 + size/2, height/2 + size/2), // BOTTOM RIGHT
         new cv.Point(width/2 - size/2, height/2 + size/2) //BOTTOM LEFT
-      
       ]
-      var scalar = new cv.Scalar(255, 255, 255);
-      cv.line(src, points[0], points[1], [255, 0, 0, 255], 1)
-      cv.line(src, points[1], points[2], [255, 0, 0, 255], 1)
-      cv.line(src, points[2], points[3], [255, 0, 0, 255], 1)
-      cv.line(src, points[3], points[0], [255, 0, 0, 255], 1)
-      for (var i = 0; i < points.length; i++) {
-        var a = gray.ucharPtr(points[i].x, points[i].y)[0];
-        if ( a > 175 || a < 80)   {
-          console.log(a)
-          var closestDistance = 10000
-          var closestPoint = null
-          for (var j = 0; j < features.data32F.length; j+=2) {
-            var distance = Math.sqrt( Math.pow((points[i].x-features.data32F[j]), 2) + Math.pow((points[i].y-features.data32F[j+1]), 2) );
-            if (distance < closestDistance) {
-              closestDistance = distance
-              closestPoint = new cv.Point(features.data32F[j], features.data32F[j+1])
-            }
+      
+      
+      var rWidth = Math.floor(Math.max(Math.sqrt( Math.pow((points[0].x-points[1].x), 2) + Math.pow((points[0].y-points[1].y), 2) ), Math.sqrt( Math.pow((points[2].x-points[3].x), 2) + Math.pow((points[2].y-points[3].y), 2) )))
+      var rHeight = Math.floor(Math.max(Math.sqrt( Math.pow((points[0].x-points[3].x), 2) + Math.pow((points[0].y-points[3].y), 2) ), Math.sqrt( Math.pow((points[1].x-points[2].x), 2) + Math.pow((points[1].y-points[2].y), 2) )))
+      var rect = new cv.Rect(points[0].x, points[0].y, rWidth, rHeight)
+      roi = src.roi(rect)
+      
+      //cv.line(src, points[0], points[1], [255, 0, 0, 255], 1)
+      //cv.line(src, points[1], points[2], [255, 0, 0, 255], 1)
+      //cv.line(src, points[2], points[3], [255, 0, 0, 255], 1)
+      //cv.line(src, points[3], points[0], [255, 0, 0, 255], 1)
+      
+      cv.cvtColor(roi, gray ,cv.COLOR_BGR2GRAY, 0)
+      cv.bilateralFilter(gray, bilateral, 9, 75, 75, cv.BORDER_DEFAULT)
+      cv.Canny(bilateral, threshold, 120, 255, 3, true)
+
+      cv.HoughLinesP(threshold, lines, 1, Math.PI / 180, 50, 5, 2);
+      let color = new cv.Scalar(255, 0, 0, 255);
+      let scolor = new cv.Scalar(0, 255, 0, 255);
+      var LSP = null
+      var LEP = null
+      var LLL = 0
+
+      var SLSP = null
+      var SLEP = null
+      var SLLL = 0
+
+      for (let i = 0; i < lines.rows; ++i) {
+          let startPoint = new cv.Point(lines.data32S[i * 4], lines.data32S[i * 4 + 1]);
+          let endPoint = new cv.Point(lines.data32S[i * 4 + 2], lines.data32S[i * 4 + 3]);
+          let length = Math.sqrt( Math.pow((startPoint.x-endPoint.x), 2) + Math.pow((startPoint.y-endPoint.y), 2))
+          if (length > LLL) {
+            LLL = length;
+            LSP = startPoint;
+            LEP = endPoint
+          } else if (length > SLLL) {
+            SLLL = length;
+            SLSP = startPoint;
+            SLEP = endPoint
           }
-          //console.log(closestPoint)
-          if (closestPoint != null) {
-            cv.circle(src, closestPoint, 5, scalar, -1)
+
+      }
+      cv.imshow('cvCanvas', threshold)
+      
+      
+      if (LSP != null && LEP != null && SLSP != null && SLEP != null) {
+
+        
+        var m =  (LSP.y - LEP.y   )/ (LSP.x - LEP.x  )
+        var sm = (SLSP.y - SLEP.y )/ (SLSP.x - SLEP.x)
+
+        var b = (LSP.y) - m * (LSP.x)
+        var sb = (SLSP.y ) - sm * (SLSP.x)
+
+        var x = ((b-sb)/m - sm) + rWidth/2
+        if (!isFinite(x)) {
+          x = LSP.x
+        }
+        var y = m * x + b
+        if (!isFinite(y)) {
+          y = LSP.y
+        }
+        var p = new cv.Point(x, y)
+
+        //cv.line(roi, new cv.Point(0, b), new cv.Point(rWidth, rWidth*m + b), new cv.Scalar(0, 0, 255, 255))
+        cv.line(roi, LSP, LEP, color);
+        cv.line(roi, SLSP, SLEP, scolor);
+        if (isFinite(x)) {
+          if (isFinite(y)) {
+            cv.circle(roi, p, 10, new cv.Scalar(0, 200, 255, 255), -1)
+          } else {
+            console.log("y = infinity")
           }
+        } else {
+          console.log("x = infinity")
         }
       }
 
-      
-      cv.imshow('cvCanvas', src)
 
-      src.delete(); gray.delete(); threshold.delete(); features.delete()
+
+      // TO DO TMRW!!!!!!!!!!!!!!!! VVVVVVVVVVVVVVVVVVVVVVVV
+
+      //var cWidth = Math.floor(Math.max(Math.sqrt( Math.pow((points[0].x-points[1].x), 2) + Math.pow((points[0].y-points[1].y), 2) ), Math.sqrt( Math.pow((points[2].x-points[3].x), 2) + Math.pow((points[2].y-points[3].y), 2) )))
+      //var crHeight = Math.floor(Math.max(Math.sqrt( Math.pow((points[0].x-points[3].x), 2) + Math.pow((points[0].y-points[3].y), 2) ), Math.sqrt( Math.pow((points[1].x-points[2].x), 2) + Math.pow((points[1].y-points[2].y), 2) )))
+      //var crect = new cv.Rect(p.x, p.y, rWidth, rHeight)
+      //code = roi.roi()
+      cv.imshow('roi', roi)
+
+      src.delete(); gray.delete(); threshold.delete(); features.delete(); roi.delete() ; lines.delete(); bilateral.delete(); code.delete();
       showImage0()
-
+    } catch{}
   }, 100)
 
 }
