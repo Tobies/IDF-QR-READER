@@ -1,7 +1,10 @@
+width =  window.innerScreen.width * 0.5
+height= window.innerScreen.height * 0.5
+
 navigator.mediaDevices.getUserMedia({
   video: {
-    width: {ideal: screen.width},
-    height: {ideal: screen.height},
+    width: {ideal: width},
+    height: {ideal: height},
     facingMode: 'environment',
     frameRate: 30
   }
@@ -12,8 +15,6 @@ video.style.display = "none";
 video.srcObject = stream;
   
 let stream_settings = stream.getVideoTracks()[0].getSettings();
-
-console.log("stream")
 video.onloadedmetadata = function(e) {
   video.play();
 };
@@ -25,8 +26,8 @@ video.onloadedmetadata = function(e) {
 video.addEventListener('play', function() {
 // trigger business logic
   var canvas = document.getElementById('canvas');
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
+  canvas.width  = width
+  canvas.height = height
   canvas.style.display = "none";
 
   var context = canvas.getContext('2d');
@@ -58,9 +59,8 @@ const showImage0 = () => {
       //for (var i = 0; i < features.data32F.length; i+=2) {
       //  cv.circle(src, new cv.Point(features.data32F[i], features.data32F[i+1]), 2, new cv.Scalar(255, 200, 0), -1)
       //}
-      var width = canvas.width
-      var height = canvas.height
-      var size = Math.floor(Math.min(canvas.width, canvas.height) * 0.50)
+      
+      var size = Math.floor(Math.min(width, height) * 0.50)
       var points = [
         new cv.Point(width/2 - size/2, height/2 - size/2), //TOP LEFT
         new cv.Point(width/2 + size/2, height/2 - size/2), //TOP RIGHT
