@@ -5,7 +5,7 @@ navigator.mediaDevices.getUserMedia({
   video: {
     width: width * 0.25,
     height: height * 0.25,
-    facingMode: 'environment'
+    facingMode: 'environment',
     frameRate: 30
   }
 }
