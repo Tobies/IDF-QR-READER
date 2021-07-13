@@ -74,8 +74,9 @@ const showImage0 = () => {
       cv.line(src, points[2], points[3], [255, 0, 0, 255], 1)
       cv.line(src, points[3], points[0], [255, 0, 0, 255], 1)
       for (var i = 0; i < points.length; i++) {
-        var a = (src.ucharPtr(points[i].x, points[i].y)[0] + src.ucharPtr(points[i].x, points[i].y)[1] + src.ucharPtr(points[i].x, points[i].y)[2] )/3;
+        var a = gray.ucharPtr(points[i].x, points[i].y)[0];
         if ( a > 175 || a < 80)   {
+          console.log(a)
           var closestDistance = 10000
           var closestPoint = null
           for (var j = 0; j < features.data32F.length; j+=2) {
