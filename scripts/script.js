@@ -105,8 +105,8 @@ function readQr() {
     var height = document.getElementById("outCanvas").getBoundingClientRect().height;
     var prespectivePoints = [];
     for (var p = 0; p < points.length; p++) {
-        var x = Math.floor(points[p].x * (src.cols/width))
-        var y = Math.floor(points[p].y * (src.rows/height))
+        var x = Math.round(points[p].x * (src.cols/width))
+        var y = Math.round(points[p].y * (src.rows/height))
         prespectivePoints.push({x:x, y:y})
     }
     var length = Math.floor(Math.max(distance(prespectivePoints[0], prespectivePoints[1]), distance(prespectivePoints[2], prespectivePoints[3])))
@@ -136,6 +136,7 @@ function readQr() {
 
     for (var x = 0; x < gridSize; x++) {
         for (var y = 0; y< gridSize; y++) {
+          cv.rectangle(out, new cv.Point(x * tile, y * tile), new cv.Point(x*tile + tile, y*tile + tile), [255, 0, 0, 255], 1)
             if (data[x][y]) {
               code.ucharPtr(x, y)[0] = 0
             } else {
@@ -144,6 +145,7 @@ function readQr() {
         }
     }
     cv.imshow("testing", out)
+
     cv.imshow("code", code)
     symbolize(code)
 
