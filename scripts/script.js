@@ -63,22 +63,38 @@ var symbols = {
   }
 
 function unsymbolize(text) {
-    r = ""
-    currentSymbol = ""
-    for (var i = 0; i < text.length; i++) {
-      currentSymbol += text[i];
-      if (currentSymbol.length == 4) {
-        if (currentSymbol in symbols) {
-          r += symbols[currentSymbol]
-          if (symbols[currentSymbol] == "~") {
-            return r
-          }
+  r = ""
+  currentSymbol = ""
+  for (var i = 0; i < text.length; i++) {
+    currentSymbol += text[i];
+    if (currentSymbol.length == 4) {
+      if (currentSymbol in symbols) {
+        r += symbols[currentSymbol]
+        if (symbols[currentSymbol] == "~") {
+          return r
         }
-        currentSymbol = ""
+      }
+      currentSymbol = ""
+    }
+  }
+  return r
+}
+
+function isValid(code) {
+  var b = ""
+  var t = ""
+  for (var x = 0; x < gridSize; x++) {
+    for(var y = 0; y < gridSize; y++) {
+      if (x == 0 || y == gridSize-1) {
+        b += 1 - (code.ucharPtr(y, x)[0]/255)
+      }
+      if (x == gridSize-1 || y == 0) {
+        t += 1 - (code.ucharPtr(y, x)[0]/255)
       }
     }
-    return r
   }
+  return !b.includes(0) && !t.includes("00") && !t.includes("11")
+}
 
 function symbolize(code) {
     var x = 1
@@ -92,13 +108,24 @@ function symbolize(code) {
       y -= 1
       x = 1
     }
-    prompt((unsymbolize(r)))
+    var maxCap = ((gridSize-4)*(gridSize-4))/4;
+    var text = unsymbolize(r)
+    if (isValid(code)) {
+      if (text.length < maxCap || text.includes(" ")) {
+        prompt("מקם את הפינות מחדש")
+      } else {
+        prompt(text)
+      }
+    } else {
+      prompt("מקם את הפינות מחדש")
+    }
   }
 
 function readQr() {
-    pause = true
-    let out = new cv.Mat()
-    src = cv.imread(document.getElementById("img"))
+  pause = true
+  let out = new cv.Mat()
+  src = cv.imread(document.getElementById("img"))
+  console.log(src.cols, src.rows)
     let code = cv.Mat.zeros(gridSize, gridSize, cv.CV_8U)
     
     var width = document.getElementById("outCanvas").getBoundingClientRect().width;
@@ -185,9 +212,11 @@ const showImage = () => {
         cv.resize(src, out, new cv.Size(width, height), 0, 0, cv.INTER_AREA)
         for (var p = 0; p < points.length; p++) {
             if (p == selected) {
-              cv.circle(out, points[p], 3, [0, 0, 255, 255], -3)
+              cv.circle(out, points[p], 5, [51, 51, 51, 255], -3)
+              cv.circle(out, points[p], 3, [96, 200, 217, 255], -3)
             } else {
-              cv.circle(out, points[p], 3, [255, 0, 0, 255], -3)
+              cv.circle(out, points[p], 5, [96, 200, 217, 255], -3)
+              cv.circle(out, points[p], 3, [51, 51, 51, 255], -3)
             }
           }
         cv.imshow("outCanvas", out);
