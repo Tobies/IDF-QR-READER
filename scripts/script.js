@@ -111,13 +111,15 @@ function symbolize(code) {
     var maxCap = ((gridSize-4)*(gridSize-4))/4;
     var text = unsymbolize(r)
     if (isValid(code)) {
-      if (text.length < maxCap || text.includes(" ")) {
-        prompt("מקם את הפינות מחדש")
-      } else {
+      if (text.length < maxCap) {
+        prompt("מקם את הפינות מחדש cap")
+      } else if (text.includes(" ")) {
+prompt("space")
+}else {
         prompt(text)
       }
     } else {
-      prompt("מקם את הפינות מחדש")
+      prompt("מקם את הפינות מחדש size")
     }
   }
 
@@ -156,7 +158,7 @@ function readQr() {
                 }
             }
             var average = sum / (tile * tile); 
-            row.push(average < 127.5)
+            row.push(average < 175)
         }
         data.push(row)
     }
