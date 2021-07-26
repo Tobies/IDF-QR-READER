@@ -112,7 +112,7 @@ function symbolize(code) {
     var text = unsymbolize(r)
     if (isValid(code)) {
       if (text.length < maxCap) {
-        prompt("מקם את הפינות מחדש", "cap")
+        prompt("מקם את הפינות מחדש", text.length + ", " + maxCap)
       } else if (text.includes(" ")) {
 prompt("space", "space")
 }else {
