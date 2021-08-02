@@ -158,7 +158,7 @@ function readQr() {
                 }
             }
             var average = sum / (tile * tile); 
-            row.push(average < 175)
+            row.push(average < 127.5)
         }
         data.push(row)
     }
