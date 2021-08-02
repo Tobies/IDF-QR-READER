@@ -111,7 +111,7 @@ function symbolize(code) {
     var maxCap = ((gridSize-4)*(gridSize-4))/4;
     var text = unsymbolize(r)
     if (isValid(code)) {
-      if (text.length < maxCap) {
+      if (text.length > maxCap) {
         prompt("מקם את הפינות מחדש", text.length + ", " + maxCap)
       } else if (text.includes(" ")) {
 prompt("space", "space")
