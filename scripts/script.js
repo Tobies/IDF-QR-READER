@@ -56,7 +56,7 @@ var symbols = {
     "1001":"9",
     "1010":"&",
     "1011":"$",
-    "1100":" ",
+    "1100":"=",
     "1101":" ",
     "1110":" ",
     "1111":"~"
@@ -114,9 +114,29 @@ function symbolize(code) {
       if (text.length > maxCap) {
         prompt("מקם את הפינות מחדש", "len " + text.length + ", " + "cap " + maxCap)
       } else if (text.includes(" ")) {
-prompt("space", "space")
-}else {
-        prompt(text)
+        prompt("space", "space")
+      } else {
+        if (text.includes("=")) {
+          var codes = text.split("=")
+          if (codes.length == 2) {
+            var code1 = codes[0];
+            var code2 = codes[1];
+            if (code2[code2.length-1] == "~") {
+              code2 = code2.substring(0, code2.length-1)
+              if (code1 == code2) {
+                prompt("Done!", code1)
+              } else {
+                prompt("1 != 2", code1 + ", " + code2)
+              }
+            } else {
+              prompt("no ~")
+            }
+          } else {
+            prompt("more than 1 =")
+          }
+        } else {
+          prompt("no =")
+        }
       }
     } else {
       prompt("מקם את הפינות מחדש size", "size")
