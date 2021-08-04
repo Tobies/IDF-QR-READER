@@ -171,14 +171,18 @@ function readQr() {
     for (var x = 0; x < length; x+=tile) {
         var row = []
         for (var y = 0; y < length; y+= tile) {
-            var sum = 0
+            var black = 0
+            var white = 0
             for (var oX = 0; oX < tile; oX += 1) {
                 for (var oY = 0; oY < tile; oY += 1) {
-                    sum += out.ucharPtr(x + oX, y + oY)[0];
+                    if (out.ucharPtr(x + oX, y + oY)[0] < 127.5) {
+                        black += 1
+                    } else {
+                        white += 1
+                    }
                 }
             }
-            var average = sum / (tile * tile); 
-            row.push(average < 127.5)
+            row.push(black > white)
         }
         data.push(row)
     }
