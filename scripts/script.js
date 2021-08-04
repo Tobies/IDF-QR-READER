@@ -124,7 +124,7 @@ function symbolize(code) {
             if (code2[code2.length-1] == "~") {
               code2 = code2.substring(0, code2.length-1)
               if (code1 == code2) {
-                alert("https://tobies.github.io/IDF-QR-READER/data=" + code1)
+                window.location.replace("https://tobies.github.io/IDF-QR-READER/data=" + code1)
               } else {
                 prompt("1 != 2", code1 + ", " + code2)
               }
