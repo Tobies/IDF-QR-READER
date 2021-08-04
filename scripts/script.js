@@ -108,7 +108,7 @@ function symbolize(code) {
       y -= 1
       x = 1
     }
-    var maxCap = ((gridSize-4)*(gridSize-4))/4;
+    var maxCap = ((gridSize-2)*(gridSize-2))/4;
     var text = unsymbolize(r)
     if (isValid(code)) {
       if (text.length > maxCap) {
